@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Habit Hero — Level Up Your Life</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    
+    /* Custom Animations */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(168, 85, 247, 0.3); }
+      50% { box-shadow: 0 0 40px rgba(168, 85, 247, 0.6); }
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+    @keyframes slide-up {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes liquid {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    .animate-float { animation: float 3s ease-in-out infinite; }
+    .animate-glow { animation: glow 2s ease-in-out infinite; }
+    .animate-shake { animation: shake 0.3s ease-in-out; }
+    .animate-slide-up { animation: slide-up 0.5s ease-out forwards; }
+    
+    .liquid-bar {
+      background-size: 200% 200%;
+      animation: liquid 3s ease infinite;
+    }
+    
+    .glass-panel {
+      background: rgba(30, 41, 59, 0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    
+    .habit-card {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .habit-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+    
+    .btn-complete {
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .btn-complete:hover {
+      transform: scale(1.1) rotate(5deg);
+    }
+    .btn-complete:active {
+      transform: scale(0.95);
+    }
+    
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    
+    /* Particle canvas */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-white min-h-screen overflow-x-hidden">
+
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Hero Header -->
+  <header class="relative overflow-hidden bg-gradient-to-br from-violet-950 via-slate-900 to-slate-950 pt-8 pb-12 px-4">
+    <!-- Animated Background Blobs -->
+    <div class="absolute inset-0 overflow-hidden">
+      <div class="absolute top-0 left-1/4 w-72 h-72 bg-purple-600/20 rounded-full blur-3xl animate-float"></div>
+      <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-600/15 rounded-full blur-3xl animate-float" style="animation-delay: 1.5s;"></div>
+      <div class="absolute top-1/2 left-1/2 w-64 h-64 bg-pink-600/10 rounded-full blur-3xl animate-float" style="animation-delay: 3s;"></div>
+    </div>
+    
+    <div class="relative max-w-3xl mx-auto text-center">
+      <h1 class="text-5xl md:text-6xl font-black tracking-tighter mb-3">
+        <span class="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">HABIT</span>
+        <span class="bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">HERO</span>
+      </h1>
+      <p class="text-slate-400 text-lg mb-8">Level up your life. One streak at a time.</p>
+      
+      <!-- Player Hero Card -->
+      <div class="glass-panel rounded-3xl p-6 md:p-8 border border-slate-700/50 inline-block w-full max-w-lg animate-glow">
+        <div class="flex items-center gap-5">
+          <!-- Avatar -->
+          <div class="relative">
+            <div id="hero-avatar-container" class="w-24 h-24 rounded-2xl bg-gradient-to-br from-cyan-500 via-purple-500 to-pink-500 flex items-center justify-center text-5xl shadow-2xl shadow-purple-500/40 transition-all duration-700 animate-float">
+              <span id="hero-avatar">🥚</span>
+            </div>
+            <div id="level-badge" class="absolute -bottom-2 -right-2 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 text-sm font-black px-3 py-1 rounded-full border-4 border-slate-800 shadow-lg">
+              LVL 1
+            </div>
+            <!-- Orbiting particles -->
+            <div class="absolute inset-0 animate-spin" style="animation-duration: 8s;">
+              <div class="absolute -top-1 left-1/2 w-2 h-2 bg-cyan-400 rounded-full shadow-lg shadow-cyan-400/50"></div>
+            </div>
+          </div>
+          
+          <!-- Stats -->
+          <div class="flex-1 text-left">
+            <div class="flex justify-between items-center mb-2">
+              <span class="font-bold text-xl text-white">Hero</span>
+              <span id="total-xp" class="text-cyan-400 font-mono font-bold text-lg">0 XP</span>
+            </div>
+            
+            <!-- XP Bar -->
+            <div class="relative w-full bg-slate-800 rounded-full h-4 overflow-hidden border border-slate-700">
+              <div id="xp-bar" class="h-full rounded-full liquid-bar transition-all duration-1000 ease-out relative" style="width: 0%; background: linear-gradient(90deg, #22d3ee, #a78bfa, #f472b6, #22d3ee); background-size: 300% 100%;">
+                <div class="absolute inset-0 bg-white/20 rounded-full animate-pulse"></div>
+              </div>
+            </div>
+            <p id="xp-text" class="text-xs text-slate-500 mt-1.5 font-medium">0 / 100 XP to Level 2</p>
+          </div>
+        </div>
+        
+        <!-- Quick Stats Grid -->
+        <div class="grid grid-cols-3 gap-3 mt-6">
+          <div class="bg-slate-900/60 rounded-2xl p-3 text-center border border-slate-800 hover:border-amber-500/30 transition-colors">
+            <div id="stat-streak" class="text-3xl font-black text-amber-400 drop-shadow-lg">0</div>
+            <div class="text-xs text-slate-500 font-medium mt-1">🔥 Streak</div>
+          </div>
+          <div class="bg-slate-900/60 rounded-2xl p-3 text-center border border-slate-800 hover:border-emerald-500/30 transition-colors">
+            <div id="stat-completed" class="text-3xl font-black text-emerald-400 drop-shadow-lg">0</div>
+            <div class="text-xs text-slate-500 font-medium mt-1">✅ Done</div>
+          </div>
+          <div class="bg-slate-900/60 rounded-2xl p-3 text-center border border-slate-800 hover:border-purple-500/30 transition-colors">
+            <div id="stat-rank" class="text-3xl font-black text-purple-400 drop-shadow-lg">#--</div>
+            <div class="text-xs text-slate-500 font-medium mt-1">🏆 Rank</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Level Up Modal -->
+  <div id="levelup-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-500">
+    <div id="levelup-content" class="glass-panel border-2 border-purple-500/50 rounded-3xl p-8 max-w-sm mx-4 text-center transform scale-75 transition-all duration-500 relative overflow-hidden">
+      <!-- Background effects -->
+      <div class="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-cyan-600/20"></div>
+      <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400"></div>
+      
+      <div class="relative">
+        <div class="text-7xl mb-4 animate-bounce">🎉</div>
+        <h2 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-pink-400 mb-2">LEVEL UP!</h2>
+        <p class="text-slate-400 mb-6 text-lg">Your hero has evolved!</p>
+        
+        <div class="mb-6 relative inline-block">
+          <div id="new-avatar" class="text-8xl transition-all duration-700 transform hover:scale-110 cursor-default"></div>
+          <div class="absolute -inset-4 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-full blur-xl animate-pulse"></div>
+        </div>
+        
+        <div id="new-level-name" class="text-xl font-bold text-purple-400 mb-6"></div>
+        
+        <button onclick="closeLevelUp()" class="w-full bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-500 hover:to-cyan-500 text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg shadow-purple-500/25 text-lg">
+          Continue Quest ⚔️
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="max-w-3xl mx-auto px-4 py-10">
+    
+    <!-- Date Navigation -->
+    <div class="flex items-center justify-between mb-8 bg-slate-900/50 rounded-2xl p-4 border border-slate-800">
+      <button onclick="changeDate(-1)" class="p-3 rounded-xl bg-slate-800 hover:bg-slate-700 transition-all duration-200 text-slate-400 hover:text-white hover:scale-110 active:scale-95">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+      </button>
+      <div class="text-center">
+        <h2 id="current-date" class="text-2xl font-bold text-white">Today</h2>
+        <p id="date-subtitle" class="text-sm text-slate-500 mt-0.5">Complete your daily quests</p>
+      </div>
+      <button onclick="changeDate(1)" class="p-3 rounded-xl bg-slate-800 hover:bg-slate-700 transition-all duration-200 text-slate-400 hover:text-white hover:scale-110 active:scale-95">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+
+    <!-- Habits List -->
+    <div id="habits-container" class="space-y-4">
+      <!-- Injected via JS -->
+    </div>
+
+    <!-- Add Habit Button -->
+    <button onclick="showAddHabit()" class="mt-6 w-full py-5 rounded-2xl border-2 border-dashed border-slate-700 text-slate-500 hover:border-purple-500 hover:text-purple-400 transition-all duration-300 flex items-center justify-center gap-3 font-bold text-lg hover:bg-purple-500/5 group">
+      <svg class="w-6 h-6 transition-transform group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+      Add New Quest
+    </button>
+
+    <!-- Add Habit Modal -->
+    <div id="add-habit-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300">
+      <div id="add-habit-content" class="glass-panel border border-slate-700 rounded-2xl p-6 max-w-md mx-4 w-full transform scale-90 transition-all duration-300">
+        <h3 class="text-2xl font-bold mb-1 text-white">New Quest</h3>
+        <p class="text-slate-500 text-sm mb-5">What challenge will you conquer today?</p>
+        <input type="text" id="new-habit-name" placeholder="e.g., Drink 8 glasses of water" 
+          class="w-full bg-slate-800 border-2 border-slate-700 rounded-xl px-4 py-3.5 text-white placeholder-slate-600 focus:outline-none focus:border-purple-500 transition-all duration-200 text-lg mb-5"
+          onkeypress="if(event.key==='Enter') addHabit()">
+        <div class="flex gap-3">
+          <button onclick="closeAddHabit()" class="flex-1 py-3.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-all font-medium">Cancel</button>
+          <button onclick="addHabit()" class="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-bold hover:from-purple-500 hover:to-cyan-500 transition-all shadow-lg shadow-purple-500/20">Create Quest</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Leaderboard Section -->
+    <div class="mt-14">
+      <div class="flex items-center gap-4 mb-6">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-2xl shadow-lg shadow-amber-500/20">🏆</div>
+        <div>
+          <h2 class="text-2xl font-bold text-white">Global Leaderboard</h2>
+          <p class="text-sm text-slate-500">Top heroes this week</p>
+        </div>
+      </div>
+      
+      <div id="leaderboard" class="space-y-2">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+    
+    <!-- Team Challenges Teaser -->
+    <div class="mt-10 glass-panel rounded-2xl p-6 border border-slate-700/50 relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl"></div>
+      <div class="relative flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-2xl">👥</div>
+        <div class="flex-1">
+          <h3 class="text-lg font-bold text-white">Team Challenges</h3>
+          <p class="text-sm text-slate-400">Join a squad and compete together. Coming soon!</p>
+        </div>
+        <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20">SOON</span>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center py-8 text-slate-600 text-sm">
+    <p>Habit Hero — Built with ⚡ and 💜</p>
+  </footer>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 glass-panel border border-slate-700 text-white px-6 py-4 rounded-2xl shadow-2xl transform translate-y-24 opacity-0 transition-all duration-400 z-50 flex items-center gap-3 min-w-[280px]">
+    <span id="toast-icon" class="text-2xl"></span>
+    <div>
+      <div id="toast-message" class="font-bold text-white"></div>
+      <div id="toast-sub" class="text-xs text-slate-400"></div>
+    </div>
+  </div>
+
+  <script>
+  // ==================== STATE ====================
+  const state = {
+    xp: 0,
+    level: 1,
+    streak: 0,
+    completedToday: 0,
+    currentDateOffset: 0,
+    habits: [
+      { id: 1, name: "💧 Drink 8 glasses of water", completed: false, streak: 5, color: "from-cyan-500 to-blue-600", icon: "💧" },
+      { id: 2, name: "🏃 30 min exercise", completed: false, streak: 3, color: "from-emerald-500 to-teal-600", icon: "🏃" },
+      { id: 3, name: "📖 Read 20 pages", completed: false, streak: 12, color: "from-amber-500 to-orange-600", icon: "📖" },
+      { id: 4, name: "🧘 10 min meditation", completed: false, streak: 0, color: "from-purple-500 to-pink-600", icon: "🧘" },
+      { id: 5, name: "🥗 Eat a healthy meal", completed: false, streak: 7, color: "from-rose-500 to-red-600", icon: "🥗" },
+    ],
+    leaderboard: [
+      { name: "DragonSlayer", level: 12, xp: 2450, streak: 45, avatar: "🐉" },
+      { name: "MorningStar", level: 10, xp: 1890, streak: 32, avatar: "⭐" },
+      { name: "IronWill", level: 9, xp: 1650, streak: 28, avatar: "⚔️" },
+      { name: "ZenMaster", level: 8, xp: 1420, streak: 21, avatar: "🧘" },
+      { name: "NightOwl", level: 7, xp: 1180, streak: 18, avatar: "🦉" },
+    ]
+  };
+
+  const LEVELS = [
+    { level: 1, name: "Egg", emoji: "🥚", xpNeeded: 100 },
+    { level: 2, name: "Hatchling", emoji: "🐣", xpNeeded: 250 },
+    { level: 3, name: "Apprentice", emoji: "🦊", xpNeeded: 500 },
+    { level: 4, name: "Warrior", emoji: "🦁", xpNeeded: 900 },
+    { level: 5, name: "Knight", emoji: "🦄", xpNeeded: 1500 },
+    { level: 6, name: "Champion", emoji: "🐉", xpNeeded: 2500 },
+    { level: 7, name: "Legend", emoji: "👑", xpNeeded: 4000 },
+    { level: 8, name: "Mythic", emoji: "🌟", xpNeeded: 6000 },
+    { level: 9, name: "Titan", emoji: "⚡", xpNeeded: 9000 },
+    { level: 10, name: "Immortal", emoji: "🔱", xpNeeded: 13000 },
+  ];
+
+  // ==================== RENDER ====================
+  function render() {
+    renderHero();
+    renderHabits();
+    renderLeaderboard();
+  }
+
+  function renderHero() {
+    const currentLevel = LEVELS[Math.min(state.level - 1, LEVELS.length - 1)];
+    const nextLevel = LEVELS[Math.min(state.level, LEVELS.length - 1)];
+    const prevLevelXp = state.level > 1 ? LEVELS[state.level - 2].xpNeeded : 0;
+    const xpInLevel = state.xp - prevLevelXp;
+    const xpNeeded = nextLevel ? nextLevel.xpNeeded - prevLevelXp : 1;
+    const progress = Math.min((xpInLevel / xpNeeded) * 100, 100);
+
+    document.getElementById('hero-avatar').textContent = currentLevel.emoji;
+    document.getElementById('level-badge').textContent = `LVL ${state.level}`;
+    document.getElementById('total-xp').textContent = `${state.xp} XP`;
+    document.getElementById('xp-bar').style.width = `${progress}%`;
+    document.getElementById('xp-text').textContent = `${xpInLevel} / ${xpNeeded} XP to Level ${state.level + 1}`;
+    document.getElementById('stat-streak').textContent = state.streak;
+    document.getElementById('stat-completed').textContent = state.completedToday;
+    document.getElementById('stat-rank').textContent = `#${getRank()}`;
+  }
+
+  function renderHabits() {
+    const container = document.getElementById('habits-container');
+    const date = new Date();
+    date.setDate(date.getDate() + state.currentDateOffset);
+    const isToday = state.currentDateOffset === 0;
+    
+    const options = { weekday: 'long', month: 'short', day: 'numeric' };
+    document.getElementById('current-date').textContent = isToday ? 'Today' : date.toLocaleDateString('en-US', options);
+    document.getElementById('date-subtitle').textContent = isToday ? 'Complete your daily quests' : 'Viewing past quests';
+
+    container.innerHTML = state.habits.map((habit, index) => {
+      const isDone = isToday ? habit.completed : Math.random() > 0.5;
+      const delay = index * 0.1;
+      
+      return `
+        <div class="habit-card glass-panel rounded-2xl p-5 border border-slate-700/50 relative overflow-hidden animate-slide-up" style="animation-delay: ${delay}s; animation-fill-mode: both;">
+          ${isDone ? '<div class="absolute top-3 right-3 text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-lg border border-emerald-500/20">+25 XP</div>' : ''}
+          
+          <div class="flex items-center gap-4">
+            <button 
+              onclick="toggleHabit(${habit.id})" 
+              class="btn-complete relative w-14 h-14 rounded-2xl bg-gradient-to-br ${habit.color} flex items-center justify-center text-white text-2xl shadow-xl ${isDone ? 'opacity-60 grayscale' : ''} ${!isToday ? 'cursor-not-allowed' : ''}"
+              ${!isToday ? 'disabled' : ''}
+            >
+              ${isDone ? '✓' : habit.icon}
+              ${isDone ? '<div class="absolute inset-0 rounded-2xl bg-white/30 animate-ping"></div>' : ''}
+            </button>
+            
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-bold text-lg ${isDone ? 'line-through text-slate-500' : 'text-white'} truncate">${habit.name}</span>
+                <div class="flex items-center gap-1.5 ${habit.streak > 0 ? 'text-amber-400' : 'text-slate-600'}">
+                  <span class="text-sm">🔥</span>
+                  <span class="font-mono font-bold">${habit.streak}</span>
+                </div>
+              </div>
+              
+              <!-- Liquid Progress Bar -->
+              <div class="relative w-full bg-slate-800/80 rounded-full h-3 overflow-hidden border border-slate-700/50">
+                <div class="h-full rounded-full liquid-bar transition-all duration-1000 ease-out relative" 
+                  style="width: ${isDone ? '100%' : '0%'}; background: linear-gradient(90deg, ${getColorHex(habit.color)}, ${getColorHex(habit.color, true)}); background-size: 200% 100%;">
+                  ${isDone ? '<div class="absolute inset-0 bg-white/20 rounded-full"></div>' : ''}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function getColorHex(colorClass, light = false) {
+    const colors = {
+      'from-cyan-500 to-blue-600': light ? '#60a5fa' : '#06b6d4',
+      'from-emerald-500 to-teal-600': light ? '#2dd4bf' : '#10b981',
+      'from-amber-500 to-orange-600': light ? '#fb923c' : '#f59e0b',
+      'from-purple-500 to-pink-600': light ? '#f472b6' : '#a855f7',
+      'from-rose-500 to-red-600': light ? '#f87171' : '#f43f5e',
+      'from-indigo-500 to-violet-600': light ? '#a78bfa' : '#6366f1',
+    };
+    return colors[colorClass] || '#a855f7';
+  }
+
+  function renderLeaderboard() {
+    const container = document.getElementById('leaderboard');
+    const you = { name: "You", level: state.level, xp: state.xp, streak: state.streak, avatar: LEVELS[Math.min(state.level - 1, LEVELS.length - 1)].emoji, isYou: true };
+    const allPlayers = [...state.leaderboard, you].sort((a, b) => b.xp - a.xp);
+
+    container.innerHTML = allPlayers.map((player, i) => {
+      const rankColors = ['text-amber-400', 'text-slate-300', 'text-amber-600'];
+      const rankBg = i === 0 ? 'bg-gradient-to-r from-amber-500/10 to-transparent border-amber-500/30' : 
+                     i === 1 ? 'bg-gradient-to-r from-slate-400/10 to-transparent border-slate-500/30' :
+                     i === 2 ? 'bg-gradient-to-r from-amber-700/10 to-transparent border-amber-700/30' :
+                     'bg-slate-800/40 border-slate-700/30';
+      
+      return `
+        <div class="flex items-center gap-4 p-4 rounded-xl border ${rankBg} ${player.isYou ? 'ring-2 ring-purple-500/40 ring-offset-2 ring-offset-slate-950' : ''} transition-all duration-300 hover:scale-[1.02] hover:bg-slate-800/60 cursor-default">
+          <div class="w-10 text-center font-black text-lg ${i < 3 ? rankColors[i] : 'text-slate-600'}">${i + 1}</div>
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center text-2xl shadow-inner border border-slate-600/50">${player.avatar}</div>
+          <div class="flex-1 min-w-0">
+            <div class="font-bold text-base ${player.isYou ? 'text-purple-400' : 'text-white'} truncate">${player.name} ${player.isYou ? '<span class="text-xs bg-purple-500/20 text-purple-400 px-2 py-0.5 rounded-full ml-2">YOU</span>' : ''}</div>
+            <div class="text-xs text-slate-500 mt-0.5">Level ${player.level} • ${player.xp.toLocaleString()} XP</div>
+          </div>
+          <div class="text-right">
+            <div class="text-amber-400 font-bold text-lg">🔥 ${player.streak}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // ==================== ACTIONS ====================
+  function toggleHabit(id) {
+    const habit = state.habits.find(h => h.id === id);
+    if (!habit || habit.completed) return;
+
+    habit.completed = true;
+    habit.streak++;
+    state.completedToday++;
+    state.xp += 25;
+    state.streak = Math.max(state.streak, habit.streak);
+
+    // Check level up
+    const nextLevelInfo = LEVELS[Math.min(state.level, LEVELS.length - 1)];
+    if (nextLevelInfo && state.xp >= nextLevelInfo.xpNeeded) {
+      state.level++;
+      setTimeout(() => showLevelUp(), 600);
+    }
+
+    fireConfetti(80);
+    showToast('🎉', 'Quest Complete!', '+25 XP earned');
+    render();
+  }
+
+  function showLevelUp() {
+    const modal = document.getElementById('levelup-modal');
+    const content = document.getElementById('levelup-content');
+    const newAvatar = document.getElementById('new-avatar');
+    const levelName = document.getElementById('new-level-name');
+    const levelInfo = LEVELS[Math.min(state.level - 1, LEVELS.length - 1)];
+    
+    newAvatar.textContent = levelInfo.emoji;
+    levelName.textContent = `${levelInfo.name} — Level ${state.level}`;
+    
+    modal.classList.remove('opacity-0', 'pointer-events-none');
+    content.classList.remove('scale-75');
+    content.classList.add('scale-100');
+    
+    fireConfetti(150);
+  }
+
+  function closeLevelUp() {
+    const modal = document.getElementById('levelup-modal');
+    const content = document.getElementById('levelup-content');
+    modal.classList.add('opacity-0', 'pointer-events-none');
+    content.classList.remove('scale-100');
+    content.classList.add('scale-75');
+  }
+
+  function changeDate(dir) {
+    state.currentDateOffset += dir;
+    render();
+  }
+
+  function showAddHabit() {
+    const modal = document.getElementById('add-habit-modal');
+    const content = document.getElementById('add-habit-content');
+    modal.classList.remove('opacity-0', 'pointer-events-none');
+    content.classList.remove('scale-90');
+    content.classList.add('scale-100');
+    setTimeout(() => document.getElementById('new-habit-name').focus(), 100);
+  }
+
+  function closeAddHabit() {
+    const modal = document.getElementById('add-habit-modal');
+    const content = document.getElementById('add-habit-content');
+    modal.classList.add('opacity-0', 'pointer-events-none');
+    content.classList.remove('scale-100');
+    content.classList.add('scale-90');
+    document.getElementById('new-habit-name').value = '';
+  }
+
+  function addHabit() {
+    const input = document.getElementById('new-habit-name');
+    const name = input.value.trim();
+    if (!name) {
+      input.classList.add('animate-shake');
+      setTimeout(() => input.classList.remove('animate-shake'), 300);
+      return;
+    }
+
+    const colors = [
+      "from-cyan-500 to-blue-600",
+      "from-emerald-500 to-teal-600", 
+      "from-amber-500 to-orange-600",
+      "from-purple-500 to-pink-600",
+      "from-rose-500 to-red-600",
+      "from-indigo-500 to-violet-600",
+      "from-lime-500 to-green-600",
+      "from-sky-500 to-indigo-600"
+    ];
+    const icons = ["🎯", "💪", "🌟", "🔥", "⚡", "🚀", "💎", "🌈"];
+
+    state.habits.push({
+      id: Date.now(),
+      name: name.startsWith(' ') ? name : `${icons[Math.floor(Math.random() * icons.length)]} ${name}`,
+      completed: false,
+      streak: 0,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      icon: icons[Math.floor(Math.random() * icons.length)]
+    });
+
+    closeAddHabit();
+    showToast('✨', 'New Quest Added!', 'Ready to conquer?');
+    render();
+  }
+
+  function getRank() {
+    const all = [...state.leaderboard, { xp: state.xp }].sort((a, b) => b.xp - a.xp);
+    return all.findIndex(p => p.xp === state.xp) + 1;
+  }
+
+  function showToast(icon, message, sub) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toast-icon').textContent = icon;
+    document.getElementById('toast-message').textContent = message;
+    document.getElementById('toast-sub').textContent = sub || '';
+    toast.classList.remove('translate-y-24', 'opacity-0');
+    
+    setTimeout(() => {
+      toast.classList.add('translate-y-24', 'opacity-0');
+    }, 2800);
+  }
+
+  // ==================== CONFETTI ENGINE ====================
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  let animationId = null;
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  class Particle {
+    constructor(x, y, burst = 1) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = Math.random() * 15 + 5;
+      this.x = x || canvas.width / 2;
+      this.y = y || canvas.height / 2;
+      this.vx = Math.cos(angle) * speed * burst;
+      this.vy = Math.sin(angle) * speed * burst - 8;
+      this.gravity = 0.4;
+      this.friction = 0.96;
+      this.size = Math.random() * 10 + 5;
+      this.colors = ['#f472b6', '#22d3ee', '#a78bfa', '#fbbf24', '#34d399', '#fb7185', '#60a5fa', '#c084fc'];
+      this.color = this.colors[Math.floor(Math.random() * this.colors.length)];
+      this.rotation = Math.random() * 360;
+      this.rotationSpeed = (Math.random() - 0.5) * 15;
+      this.life = 1;
+      this.decay = Math.random() * 0.015 + 0.008;
+      this.shape = Math.random() > 0.6 ? 'rect' : (Math.random() > 0.5 ? 'circle' : 'star');
+      this.sparkle = Math.random() > 0.7;
+    }
+
+    update() {
+      this.vx *= this.friction;
+      this.vy *= this.friction;
+      this.vy += this.gravity;
+      this.x += this.vx;
+      this.y += this.vy;
+      this.rotation += this.rotationSpeed;
+      this.life -= this.decay;
+      
+      if (this.sparkle) {
+        this.size *= 0.99;
+      }
+    }
+
+    draw() {
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.rotate((this.rotation * Math.PI) / 180);
+      ctx.globalAlpha = this.life;
+      ctx.fillStyle = this.color;
+      
+      if (this.shape === 'rect') {
+        ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
+      } else if (this.shape === 'circle') {
+        ctx.beginPath();
+        ctx.arc(0, 0, this.size / 2, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        // Star shape
+        ctx.beginPath();
+        for (let i = 0; i < 5; i++) {
+          ctx.lineTo(Math.cos((18 + i * 72) * Math.PI / 180) * this.size / 2,
+                     -Math.sin((18 + i * 72) * Math.PI / 180) * this.size / 2);
+          ctx.lineTo(Math.cos((54 + i * 72) * Math.PI / 180) * this.size / 4,
+                     -Math.sin((54 + i * 72) * Math.PI / 180) * this.size / 4);
+        }
+        ctx.closePath();
+        ctx.fill();
+      }
+      
+      if (this.sparkle) {
+        ctx.shadowColor = this.color;
+        ctx.shadowBlur = 10;
+      }
+      
+      ctx.restore();
+    }
+  }
+
+  function fireConfetti(amount = 60) {
+    const rect = document.getElementById('habits-container').getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + 100;
+    
+    for (let i = 0; i < amount; i++) {
+      particles.push(new Particle(centerX, centerY, amount / 50));
+    }
+    
+    if (!animationId) {
+      animateConfetti();
+    }
+  }
+
+  function animateConfetti() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles = particles.filter(p => p.life > 0);
+    
+    particles.forEach(p => {
+      p.update();
+      p.draw();
+    });
+    
+    if (particles.length > 0) {
+      animationId = requestAnimationFrame(animateConfetti);
+    } else {
+      animationId = null;
+    }
+  }
+
+  // ==================== KEYBOARD SHORTCUTS ====================
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeAddHabit();
+      closeLevelUp();
+    }
+  });
+
+  // ==================== INIT ====================
+  render();
+  </script>
+</body>
+</html>
