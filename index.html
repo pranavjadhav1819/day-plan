@@ -1,680 +1,998 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Habit Hero — Level Up Your Life</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <style>
-    * { font-family: 'Inter', sans-serif; }
-    
-    /* Custom Animations */
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-    }
-    @keyframes glow {
-      0%, 100% { box-shadow: 0 0 20px rgba(168, 85, 247, 0.3); }
-      50% { box-shadow: 0 0 40px rgba(168, 85, 247, 0.6); }
-    }
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      75% { transform: translateX(5px); }
-    }
-    @keyframes pulse-glow {
-      0%, 100% { opacity: 0.5; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.05); }
-    }
-    @keyframes slide-up {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes liquid {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-    
-    .animate-float { animation: float 3s ease-in-out infinite; }
-    .animate-glow { animation: glow 2s ease-in-out infinite; }
-    .animate-shake { animation: shake 0.3s ease-in-out; }
-    .animate-slide-up { animation: slide-up 0.5s ease-out forwards; }
-    
-    .liquid-bar {
-      background-size: 200% 200%;
-      animation: liquid 3s ease infinite;
-    }
-    
-    .glass-panel {
-      background: rgba(30, 41, 59, 0.6);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-    }
-    
-    .habit-card {
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .habit-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    }
-    
-    .btn-complete {
-      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .btn-complete:hover {
-      transform: scale(1.1) rotate(5deg);
-    }
-    .btn-complete:active {
-      transform: scale(0.95);
-    }
-    
-    /* Scrollbar */
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: #0f172a; }
-    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #475569; }
-    
-    /* Particle canvas */
-    #confetti-canvas {
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Protocol — Reset the Loop. Focus the Day. Build the You.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0A0D08;
+    --bg-soft: #10140C;
+    --surface: rgba(255,255,255,0.045);
+    --surface-strong: rgba(255,255,255,0.07);
+    --line: rgba(255,255,255,0.10);
+    --ink: #F3F6EE;
+    --ink-soft: #9CA795;
+    --ink-faint: #626B5C;
+    --lime: #B6FF3B;
+    --lime-dim: #86D416;
+    --amber: #F5B105;
+    --amber-soft: rgba(245,177,5,0.12);
+    --teal: #2FD9C4;
+    --blue: #5B8CFF;
+    --purple: #B47CFF;
+    --orange: #FF9152;
+    --red: #FF6B6B;
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 9px;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    background-image:
+      radial-gradient(ellipse 900px 500px at 15% -5%, rgba(182,255,59,0.08), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 15%, rgba(245,177,5,0.05), transparent 55%);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, .display {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.5px;
+    line-height: 1;
+    margin: 0;
+  }
+
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+
+  a { color: inherit; }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  section { padding: 96px 0; position: relative; }
+  section .wrap { position: relative; z-index: 1; }
+
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--lime);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .eyebrow::before {
+    content: '';
+    width: 22px;
+    height: 1px;
+    background: var(--lime);
+  }
+
+  .section-title {
+    font-size: clamp(34px, 5.5vw, 56px);
+    margin-bottom: 14px;
+  }
+  .section-sub {
+    color: var(--ink-soft);
+    font-size: 15.5px;
+    max-width: 560px;
+    margin-bottom: 48px;
+    line-height: 1.55;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 24px;
+  }
+
+  /* ---------- ANIMATED BACKGROUND ATHLETES ---------- */
+  .bg-athletes {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .bg-fig { position: absolute; }
+
+  .fig-cyclist { left: -30px; bottom: -10px; width: 360px; animation: bikeDrift 16s ease-in-out infinite; }
+  .fig-yoga { right: -10px; top: 110px; width: 230px; animation: yogaBreathe 6s ease-in-out infinite; }
+  .fig-gym { right: 4%; bottom: 30px; width: 210px; }
+  .fig-cyclist2 { left: 10%; top: 60px; width: 190px; opacity: 0.55; animation: bikeDrift 22s ease-in-out infinite reverse; }
+
+  @keyframes bikeDrift {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(26px, -10px); }
+  }
+  @keyframes yogaBreathe {
+    0%, 100% { transform: scale(1) translateY(0); }
+    50% { transform: scale(1.025) translateY(-6px); }
+  }
+  @keyframes wheelSpin { to { transform: rotate(360deg); } }
+  .wheel { transform-box: fill-box; transform-origin: center; animation: wheelSpin 2.4s linear infinite; }
+  @keyframes crankSpin { to { transform: rotate(360deg); } }
+  .crank { transform-box: fill-box; transform-origin: center; animation: crankSpin 2.4s linear infinite; }
+  @keyframes haloPulse {
+    0%, 100% { transform: scale(1); opacity: 0.45; }
+    50% { transform: scale(1.14); opacity: 0.12; }
+  }
+  .yoga-halo { transform-box: fill-box; transform-origin: center; animation: haloPulse 4.5s ease-in-out infinite; }
+  @keyframes pressLift {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-9px); }
+  }
+  .gym-arms { transform-box: fill-box; transform-origin: center; animation: pressLift 2.2s ease-in-out infinite; }
+  @keyframes squatFlex {
+    0%, 100% { transform: scaleY(1); }
+    50% { transform: scaleY(0.95); }
+  }
+  .gym-legs { transform-box: fill-box; transform-origin: bottom; animation: squatFlex 2.2s ease-in-out infinite; }
+
+  /* ---------- NAV ---------- */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(10,13,8,0.72);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 1px;
+  }
+  .nav-logo .bolt { color: var(--lime); }
+  .nav-links {
+    display: flex;
+    gap: 26px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .nav-links a {
+    text-decoration: none;
+    color: var(--ink-soft);
+    padding: 4px 0;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+  .nav-links a:hover, .nav-links a.active {
+    color: var(--ink);
+    border-color: var(--lime);
+  }
+  .nav-toggle { display: none; }
+  @media (max-width: 760px) {
+    .nav-links {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 9999;
+      top: 54px; left: 0; right: 0;
+      background: var(--bg-soft);
+      border-bottom: 1px solid var(--line);
+      flex-direction: column;
+      gap: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.25s ease;
     }
-  </style>
+    .nav-links.open { max-height: 320px; }
+    .nav-links a { padding: 14px 24px; width: 100%; border-bottom: 1px solid var(--line); border-left: 2px solid transparent; }
+    .nav-links a.active { border-left-color: var(--lime); border-bottom-color: var(--line); }
+    .nav-toggle {
+      display: block;
+      background: none;
+      border: 1px solid var(--line);
+      color: var(--ink);
+      border-radius: var(--radius-sm);
+      padding: 7px 10px;
+      font-size: 16px;
+    }
+  }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding-top: 90px;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 40px;
+    align-items: center;
+  }
+  .hero h1 {
+    font-size: clamp(46px, 7.2vw, 92px);
+  }
+  .hero h1 .accent { color: var(--lime); }
+  .hero-tagline {
+    font-size: 17px;
+    color: var(--ink-soft);
+    max-width: 460px;
+    margin: 22px 0 32px;
+    line-height: 1.6;
+  }
+  .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 14px 24px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn-primary { background: var(--lime); color: #0A0D08; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(182,255,59,0.25); }
+  .btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  .btn-ghost:hover { border-color: var(--ink-soft); }
+
+  .hero-stats {
+    display: flex;
+    gap: 26px;
+    margin-top: 44px;
+  }
+  .hero-stat .num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30px;
+    color: var(--lime);
+  }
+  .hero-stat .lbl {
+    font-size: 11px;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* habit loop diagram */
+  .loop-diagram { display: flex; align-items: center; justify-content: center; }
+  .loop-ring { animation: spin 50s linear infinite; transform-origin: 200px 200px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loop-node-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    font-weight: 600;
+    fill: var(--ink);
+  }
+  .loop-node-sub {
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    fill: var(--ink-faint);
+  }
+  .loop-center-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    fill: var(--ink);
+  }
+
+  @media (max-width: 860px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .loop-diagram { order: -1; }
+    .loop-diagram svg { width: 260px; height: 260px; }
+  }
+
+  /* ---------- FRAMEWORK CARDS ---------- */
+  .framework-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 860px) { .framework-grid { grid-template-columns: 1fr; } }
+
+  .fw-icon {
+    width: 40px; height: 40px;
+    border-radius: 11px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 16px;
+  }
+  .fw-card h3 { font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 8px; letter-spacing: 0; }
+  .fw-card p { font-size: 13.5px; color: var(--ink-soft); line-height: 1.6; margin: 0; }
+  .fw-card .highlight { color: var(--lime); font-weight: 700; }
+
+  .quote-strip {
+    border-left: 3px solid var(--lime);
+    padding: 4px 0 4px 22px;
+    font-size: 20px;
+    font-style: italic;
+    color: var(--ink);
+    max-width: 640px;
+  }
+
+  /* ---------- SCHEDULE TIMELINE ---------- */
+  .timeline { position: relative; padding-left: 34px; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 9px; top: 4px; bottom: 4px;
+    width: 2px;
+    background: linear-gradient(var(--line), var(--line));
+  }
+  .t-row {
+    position: relative;
+    padding-bottom: 26px;
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 18px;
+    align-items: start;
+  }
+  .t-row:last-child { padding-bottom: 0; }
+  .t-dot {
+    position: absolute;
+    left: -34px; top: 3px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 3px solid var(--bg);
+    box-shadow: 0 0 0 1px var(--line);
+  }
+  .t-time { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--ink-soft); padding-top: 2px; }
+  .t-content h4 { font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700; margin: 0 0 4px; letter-spacing: 0; }
+  .t-content p { margin: 0; font-size: 13px; color: var(--ink-faint); line-height: 1.5; }
+  .t-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  /* ---------- WEEK GRID ---------- */
+  .week-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+  }
+  .day-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 18px;
+    border-top: 3px solid var(--day-color, var(--lime));
+  }
+  .day-card .day-name { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 2px; color: var(--day-color, var(--lime)); font-weight: 700; margin-bottom: 10px; }
+  .day-card h4 { font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 0; margin: 0; line-height: 1.35; }
+
+  /* ---------- WORKOUT ---------- */
+  .vs-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    position: relative;
+  }
+  @media (max-width: 760px) { .vs-panel { grid-template-columns: 1fr; } }
+  .vs-side { padding: 32px 28px; }
+  .vs-side.a { background: linear-gradient(160deg, rgba(182,255,59,0.10), transparent 60%); }
+  .vs-side.b { background: linear-gradient(200deg, rgba(91,140,255,0.10), transparent 60%); border-left: 1px solid var(--line); }
+  @media (max-width: 760px) { .vs-side.b { border-left: none; border-top: 1px solid var(--line); } }
+  .vs-badge {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: 46px; height: 46px;
+    background: var(--ink);
+    color: var(--bg);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 15px;
+    z-index: 2;
+    box-shadow: 0 0 0 6px var(--bg);
+  }
+  @media (max-width: 760px) { .vs-badge { top: initial; } }
+  .vs-side .day-tag { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 2px; color: var(--ink-faint); text-transform: uppercase; margin-bottom: 8px; }
+  .vs-side h3 { font-size: 30px; margin-bottom: 4px; }
+  .vs-side .days-pill {
+    display: inline-block;
+    margin-top: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: var(--surface-strong);
+    margin-bottom: 20px;
+  }
+  .vs-side.a .days-pill { color: var(--lime); }
+  .vs-side.b .days-pill { color: var(--blue); }
+  .vs-meta { display: flex; gap: 22px; margin-top: 20px; font-size: 12px; color: var(--ink-soft); }
+  .vs-meta .m-lbl { color: var(--ink-faint); font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .vs-meta .m-val { font-weight: 700; color: var(--ink); font-size: 13px; }
+
+  .exercise-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 13.5px;
+  }
+  .exercise-row:last-of-type { border-bottom: none; }
+  .exercise-num {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--surface-strong);
+    color: var(--blue);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .exercise-row .ex-name { flex: 1; }
+  .exercise-row .ex-reps { font-family: 'IBM Plex Mono', monospace; color: var(--blue); font-weight: 600; font-size: 12.5px; }
+  .round-note {
+    margin-top: 16px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    background: var(--surface-strong);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    color: var(--blue);
+    text-align: center;
+  }
+
+  /* ---------- FUEL / TARGETS ---------- */
+  .fuel-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 18px;
+  }
+  @media (max-width: 900px) { .fuel-grid { grid-template-columns: 1fr; } }
+  .fuel-grid .card h3 { font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase; margin-bottom: 16px; }
+  .principle-row { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; font-size: 13px; color: var(--ink-soft); border-bottom: 1px solid var(--line); }
+  .principle-row:last-child { border-bottom: none; }
+  .principle-row strong { color: var(--ink); display: block; font-size: 13.5px; margin-bottom: 1px; }
+  .principle-row .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--lime); margin-top: 6px; flex-shrink: 0; }
+  .principle-row.limit .dot { background: var(--red); }
+
+  .gauge-wrap { text-align: center; }
+  .gauge-nums { font-family: 'Bebas Neue', sans-serif; font-size: 34px; color: var(--amber); margin: 10px 0 2px; }
+  .gauge-sub { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink-faint); letter-spacing: 1px; }
+  .gauge-note {
+    margin-top: 16px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    background: var(--surface-strong);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    line-height: 1.5;
+  }
+
+  .water-check { display: flex; align-items: center; gap: 10px; padding: 7px 0; font-size: 13px; color: var(--ink-soft); }
+  .water-check .tick { color: var(--teal); font-weight: 700; }
+  .water-big { font-family: 'Bebas Neue', sans-serif; font-size: 30px; color: var(--teal); margin-bottom: 4px; }
+
+  /* daily targets checklist */
+  .targets-card { grid-column: 1 / -1; }
+  .targets-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap: 4px 20px; }
+  .target-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 4px;
+    font-size: 13.5px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--line);
+  }
+  .target-item input { accent-color: var(--lime); width: 16px; height: 16px; flex-shrink: 0; }
+  .target-item.done span { color: var(--ink-faint); text-decoration: line-through; }
+  .targets-progress { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--lime); margin-top: 14px; }
+
+  /* ---------- MINDSET ---------- */
+  .mindset-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  @media (max-width: 760px) { .mindset-grid { grid-template-columns: 1fr; } }
+  .reminder-row { display: flex; align-items: center; gap: 12px; padding: 9px 0; font-size: 13.5px; border-bottom: 1px solid var(--line); }
+  .reminder-row:last-child { border-bottom: none; }
+  .reminder-row.avoid { color: var(--red); }
+  .r-icon { width: 26px; text-align: center; flex-shrink: 0; color: var(--ink-faint); }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    padding: 80px 0 40px;
+    text-align: center;
+    border-top: 1px solid var(--line);
+  }
+  footer .big-quote {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(28px, 5vw, 46px);
+    max-width: 720px;
+    margin: 0 auto 18px;
+    line-height: 1.15;
+  }
+  footer .big-quote .accent { color: var(--lime); }
+  footer .foot-tag { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--ink-faint); letter-spacing: 2px; text-transform: uppercase; margin-top: 26px; }
+
+  .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { transition: none !important; animation: none !important; }
+    .reveal { opacity: 1; transform: none; }
+  }
+</style>
 </head>
-<body class="bg-slate-950 text-white min-h-screen overflow-x-hidden">
+<body>
 
-  <!-- Confetti Canvas -->
-  <canvas id="confetti-canvas"></canvas>
+<div class="bg-athletes" aria-hidden="true">
 
-  <!-- Hero Header -->
-  <header class="relative overflow-hidden bg-gradient-to-br from-violet-950 via-slate-900 to-slate-950 pt-8 pb-12 px-4">
-    <!-- Animated Background Blobs -->
-    <div class="absolute inset-0 overflow-hidden">
-      <div class="absolute top-0 left-1/4 w-72 h-72 bg-purple-600/20 rounded-full blur-3xl animate-float"></div>
-      <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-600/15 rounded-full blur-3xl animate-float" style="animation-delay: 1.5s;"></div>
-      <div class="absolute top-1/2 left-1/2 w-64 h-64 bg-pink-600/10 rounded-full blur-3xl animate-float" style="animation-delay: 3s;"></div>
-    </div>
-    
-    <div class="relative max-w-3xl mx-auto text-center">
-      <h1 class="text-5xl md:text-6xl font-black tracking-tighter mb-3">
-        <span class="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">HABIT</span>
-        <span class="bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">HERO</span>
-      </h1>
-      <p class="text-slate-400 text-lg mb-8">Level up your life. One streak at a time.</p>
-      
-      <!-- Player Hero Card -->
-      <div class="glass-panel rounded-3xl p-6 md:p-8 border border-slate-700/50 inline-block w-full max-w-lg animate-glow">
-        <div class="flex items-center gap-5">
-          <!-- Avatar -->
-          <div class="relative">
-            <div id="hero-avatar-container" class="w-24 h-24 rounded-2xl bg-gradient-to-br from-cyan-500 via-purple-500 to-pink-500 flex items-center justify-center text-5xl shadow-2xl shadow-purple-500/40 transition-all duration-700 animate-float">
-              <span id="hero-avatar">🥚</span>
-            </div>
-            <div id="level-badge" class="absolute -bottom-2 -right-2 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 text-sm font-black px-3 py-1 rounded-full border-4 border-slate-800 shadow-lg">
-              LVL 1
-            </div>
-            <!-- Orbiting particles -->
-            <div class="absolute inset-0 animate-spin" style="animation-duration: 8s;">
-              <div class="absolute -top-1 left-1/2 w-2 h-2 bg-cyan-400 rounded-full shadow-lg shadow-cyan-400/50"></div>
-            </div>
-          </div>
-          
-          <!-- Stats -->
-          <div class="flex-1 text-left">
-            <div class="flex justify-between items-center mb-2">
-              <span class="font-bold text-xl text-white">Hero</span>
-              <span id="total-xp" class="text-cyan-400 font-mono font-bold text-lg">0 XP</span>
-            </div>
-            
-            <!-- XP Bar -->
-            <div class="relative w-full bg-slate-800 rounded-full h-4 overflow-hidden border border-slate-700">
-              <div id="xp-bar" class="h-full rounded-full liquid-bar transition-all duration-1000 ease-out relative" style="width: 0%; background: linear-gradient(90deg, #22d3ee, #a78bfa, #f472b6, #22d3ee); background-size: 300% 100%;">
-                <div class="absolute inset-0 bg-white/20 rounded-full animate-pulse"></div>
-              </div>
-            </div>
-            <p id="xp-text" class="text-xs text-slate-500 mt-1.5 font-medium">0 / 100 XP to Level 2</p>
-          </div>
-        </div>
-        
-        <!-- Quick Stats Grid -->
-        <div class="grid grid-cols-3 gap-3 mt-6">
-          <div class="bg-slate-900/60 rounded-2xl p-3 text-center border border-slate-800 hover:border-amber-500/30 transition-colors">
-            <div id="stat-streak" class="text-3xl font-black text-amber-400 drop-shadow-lg">0</div>
-            <div class="text-xs text-slate-500 font-medium mt-1">🔥 Streak</div>
-          </div>
-          <div class="bg-slate-900/60 rounded-2xl p-3 text-center border border-slate-800 hover:border-emerald-500/30 transition-colors">
-            <div id="stat-completed" class="text-3xl font-black text-emerald-400 drop-shadow-lg">0</div>
-            <div class="text-xs text-slate-500 font-medium mt-1">✅ Done</div>
-          </div>
-          <div class="bg-slate-900/60 rounded-2xl p-3 text-center border border-slate-800 hover:border-purple-500/30 transition-colors">
-            <div id="stat-rank" class="text-3xl font-black text-purple-400 drop-shadow-lg">#--</div>
-            <div class="text-xs text-slate-500 font-medium mt-1">🏆 Rank</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
+  <svg class="bg-fig fig-cyclist" viewBox="0 0 220 140" fill="none">
+    <g class="wheel"><circle cx="40" cy="108" r="27" stroke="#B6FF3B" stroke-width="2.5" opacity="0.35"/>
+      <line x1="40" y1="81" x2="40" y2="135" stroke="#B6FF3B" stroke-width="1.5" opacity="0.3"/>
+      <line x1="13" y1="108" x2="67" y2="108" stroke="#B6FF3B" stroke-width="1.5" opacity="0.3"/>
+      <line x1="21" y1="89" x2="59" y2="127" stroke="#B6FF3B" stroke-width="1.5" opacity="0.3"/>
+      <line x1="21" y1="127" x2="59" y2="89" stroke="#B6FF3B" stroke-width="1.5" opacity="0.3"/></g>
+    <g class="wheel"><circle cx="172" cy="108" r="27" stroke="#B6FF3B" stroke-width="2.5" opacity="0.35"/>
+      <line x1="172" y1="81" x2="172" y2="135" stroke="#B6FF3B" stroke-width="1.5" opacity="0.3"/>
+      <line x1="145" y1="108" x2="199" y2="108" stroke="#B6FF3B" stroke-width="1.5" opacity="0.3"/>
+      <line x1="153" y1="89" x2="191" y2="127" stroke="#B6FF3B" stroke-width="1.5" opacity="0.3"/>
+      <line x1="153" y1="127" x2="191" y2="89" stroke="#B6FF3B" stroke-width="1.5" opacity="0.3"/></g>
+    <path d="M40,108 L100,60 L172,108 M100,60 L112,100 M100,60 L150,54" stroke="#B6FF3B" stroke-width="2.5" opacity="0.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <g class="crank"><line x1="100" y1="100" x2="112" y2="112" stroke="#B6FF3B" stroke-width="2.5" opacity="0.4" stroke-linecap="round"/><line x1="100" y1="100" x2="88" y2="88" stroke="#B6FF3B" stroke-width="2.5" opacity="0.4" stroke-linecap="round"/></g>
+    <circle cx="126" cy="26" r="9" stroke="#B6FF3B" stroke-width="2.5" opacity="0.4"/>
+    <path d="M126,35 L106,58 M112,58 L86,88 M112,58 L120,45 L150,54" stroke="#B6FF3B" stroke-width="2.5" opacity="0.4" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
 
-  <!-- Level Up Modal -->
-  <div id="levelup-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-500">
-    <div id="levelup-content" class="glass-panel border-2 border-purple-500/50 rounded-3xl p-8 max-w-sm mx-4 text-center transform scale-75 transition-all duration-500 relative overflow-hidden">
-      <!-- Background effects -->
-      <div class="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-cyan-600/20"></div>
-      <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400"></div>
-      
-      <div class="relative">
-        <div class="text-7xl mb-4 animate-bounce">🎉</div>
-        <h2 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-pink-400 mb-2">LEVEL UP!</h2>
-        <p class="text-slate-400 mb-6 text-lg">Your hero has evolved!</p>
-        
-        <div class="mb-6 relative inline-block">
-          <div id="new-avatar" class="text-8xl transition-all duration-700 transform hover:scale-110 cursor-default"></div>
-          <div class="absolute -inset-4 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-full blur-xl animate-pulse"></div>
-        </div>
-        
-        <div id="new-level-name" class="text-xl font-bold text-purple-400 mb-6"></div>
-        
-        <button onclick="closeLevelUp()" class="w-full bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-500 hover:to-cyan-500 text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg shadow-purple-500/25 text-lg">
-          Continue Quest ⚔️
-        </button>
-      </div>
+  <svg class="bg-fig fig-cyclist2" viewBox="0 0 220 140" fill="none">
+    <g class="wheel"><circle cx="40" cy="108" r="27" stroke="#5B8CFF" stroke-width="2.5" opacity="0.3"/>
+      <line x1="40" y1="81" x2="40" y2="135" stroke="#5B8CFF" stroke-width="1.5" opacity="0.25"/>
+      <line x1="13" y1="108" x2="67" y2="108" stroke="#5B8CFF" stroke-width="1.5" opacity="0.25"/></g>
+    <g class="wheel"><circle cx="172" cy="108" r="27" stroke="#5B8CFF" stroke-width="2.5" opacity="0.3"/>
+      <line x1="172" y1="81" x2="172" y2="135" stroke="#5B8CFF" stroke-width="1.5" opacity="0.25"/>
+      <line x1="145" y1="108" x2="199" y2="108" stroke="#5B8CFF" stroke-width="1.5" opacity="0.25"/></g>
+    <path d="M40,108 L100,60 L172,108 M100,60 L112,100 M100,60 L150,54" stroke="#5B8CFF" stroke-width="2.5" opacity="0.35" stroke-linecap="round" stroke-linejoin="round"/>
+    <g class="crank"><line x1="100" y1="100" x2="112" y2="112" stroke="#5B8CFF" stroke-width="2.5" opacity="0.35" stroke-linecap="round"/><line x1="100" y1="100" x2="88" y2="88" stroke="#5B8CFF" stroke-width="2.5" opacity="0.35" stroke-linecap="round"/></g>
+    <circle cx="126" cy="26" r="9" stroke="#5B8CFF" stroke-width="2.5" opacity="0.35"/>
+    <path d="M126,35 L106,58 M112,58 L86,88 M112,58 L120,45 L150,54" stroke="#5B8CFF" stroke-width="2.5" opacity="0.35" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+
+  <svg class="bg-fig fig-yoga" viewBox="0 0 160 160" fill="none">
+    <circle class="yoga-halo" cx="80" cy="90" r="66" stroke="#B47CFF" stroke-width="1.5"/>
+    <circle cx="80" cy="34" r="10" stroke="#B47CFF" stroke-width="2.5" opacity="0.4"/>
+    <path d="M80,44 L80,78 M80,78 C 55,90 40,100 26,98 M80,78 C105,90 120,100 134,98 M80,78 C 60,108 40,112 22,104 M80,78 C100,108 120,112 138,104" stroke="#B47CFF" stroke-width="2.5" opacity="0.4" stroke-linecap="round" fill="none"/>
+    <path d="M30,112 C 55,126 105,126 130,112" stroke="#B47CFF" stroke-width="2.5" opacity="0.4" stroke-linecap="round" fill="none"/>
+  </svg>
+
+  <svg class="bg-fig fig-gym" viewBox="0 0 160 200" fill="none">
+    <circle cx="80" cy="32" r="10" stroke="#F5B105" stroke-width="2.5" opacity="0.42"/>
+    <line x1="80" y1="42" x2="80" y2="108" stroke="#F5B105" stroke-width="2.5" opacity="0.42" stroke-linecap="round"/>
+    <g class="gym-arms">
+      <line x1="46" y1="18" x2="114" y2="18" stroke="#F5B105" stroke-width="3" opacity="0.42" stroke-linecap="round"/>
+      <circle cx="46" cy="18" r="8" stroke="#F5B105" stroke-width="2.5" opacity="0.42"/>
+      <circle cx="114" cy="18" r="8" stroke="#F5B105" stroke-width="2.5" opacity="0.42"/>
+      <line x1="80" y1="46" x2="46" y2="18" stroke="#F5B105" stroke-width="2.5" opacity="0.42" stroke-linecap="round"/>
+      <line x1="80" y1="46" x2="114" y2="18" stroke="#F5B105" stroke-width="2.5" opacity="0.42" stroke-linecap="round"/>
+    </g>
+    <g class="gym-legs">
+      <line x1="80" y1="108" x2="60" y2="160" stroke="#F5B105" stroke-width="2.5" opacity="0.42" stroke-linecap="round"/>
+      <line x1="80" y1="108" x2="100" y2="160" stroke="#F5B105" stroke-width="2.5" opacity="0.42" stroke-linecap="round"/>
+    </g>
+  </svg>
+
+</div>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo"><span class="bolt">⚡</span> THE PROTOCOL</div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">☰</button>
+    <div class="nav-links" id="navLinks">
+      <a href="#home">Home</a>
+      <a href="#framework">Framework</a>
+      <a href="#schedule">Schedule</a>
+      <a href="#week">Week</a>
+      <a href="#workout">Workout</a>
+      <a href="#fuel">Fuel</a>
+      <a href="#mindset">Mindset</a>
     </div>
   </div>
+</nav>
 
-  <!-- Main Content -->
-  <main class="max-w-3xl mx-auto px-4 py-10">
-    
-    <!-- Date Navigation -->
-    <div class="flex items-center justify-between mb-8 bg-slate-900/50 rounded-2xl p-4 border border-slate-800">
-      <button onclick="changeDate(-1)" class="p-3 rounded-xl bg-slate-800 hover:bg-slate-700 transition-all duration-200 text-slate-400 hover:text-white hover:scale-110 active:scale-95">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
-      </button>
-      <div class="text-center">
-        <h2 id="current-date" class="text-2xl font-bold text-white">Today</h2>
-        <p id="date-subtitle" class="text-sm text-slate-500 mt-0.5">Complete your daily quests</p>
-      </div>
-      <button onclick="changeDate(1)" class="p-3 rounded-xl bg-slate-800 hover:bg-slate-700 transition-all duration-200 text-slate-400 hover:text-white hover:scale-110 active:scale-95">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
-      </button>
-    </div>
-
-    <!-- Habits List -->
-    <div id="habits-container" class="space-y-4">
-      <!-- Injected via JS -->
-    </div>
-
-    <!-- Add Habit Button -->
-    <button onclick="showAddHabit()" class="mt-6 w-full py-5 rounded-2xl border-2 border-dashed border-slate-700 text-slate-500 hover:border-purple-500 hover:text-purple-400 transition-all duration-300 flex items-center justify-center gap-3 font-bold text-lg hover:bg-purple-500/5 group">
-      <svg class="w-6 h-6 transition-transform group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-      Add New Quest
-    </button>
-
-    <!-- Add Habit Modal -->
-    <div id="add-habit-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300">
-      <div id="add-habit-content" class="glass-panel border border-slate-700 rounded-2xl p-6 max-w-md mx-4 w-full transform scale-90 transition-all duration-300">
-        <h3 class="text-2xl font-bold mb-1 text-white">New Quest</h3>
-        <p class="text-slate-500 text-sm mb-5">What challenge will you conquer today?</p>
-        <input type="text" id="new-habit-name" placeholder="e.g., Drink 8 glasses of water" 
-          class="w-full bg-slate-800 border-2 border-slate-700 rounded-xl px-4 py-3.5 text-white placeholder-slate-600 focus:outline-none focus:border-purple-500 transition-all duration-200 text-lg mb-5"
-          onkeypress="if(event.key==='Enter') addHabit()">
-        <div class="flex gap-3">
-          <button onclick="closeAddHabit()" class="flex-1 py-3.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-all font-medium">Cancel</button>
-          <button onclick="addHabit()" class="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-bold hover:from-purple-500 hover:to-cyan-500 transition-all shadow-lg shadow-purple-500/20">Create Quest</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Leaderboard Section -->
-    <div class="mt-14">
-      <div class="flex items-center gap-4 mb-6">
-        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-2xl shadow-lg shadow-amber-500/20">🏆</div>
-        <div>
-          <h2 class="text-2xl font-bold text-white">Global Leaderboard</h2>
-          <p class="text-sm text-slate-500">Top heroes this week</p>
-        </div>
-      </div>
-      
-      <div id="leaderboard" class="space-y-2">
-        <!-- Injected via JS -->
-      </div>
-    </div>
-    
-    <!-- Team Challenges Teaser -->
-    <div class="mt-10 glass-panel rounded-2xl p-6 border border-slate-700/50 relative overflow-hidden">
-      <div class="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl"></div>
-      <div class="relative flex items-center gap-4">
-        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-2xl">👥</div>
-        <div class="flex-1">
-          <h3 class="text-lg font-bold text-white">Team Challenges</h3>
-          <p class="text-sm text-slate-400">Join a squad and compete together. Coming soon!</p>
-        </div>
-        <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20">SOON</span>
-      </div>
-    </div>
-  </main>
-
-  <!-- Footer -->
-  <footer class="text-center py-8 text-slate-600 text-sm">
-    <p>Habit Hero — Built with ⚡ and 💜</p>
-  </footer>
-
-  <!-- Toast Notification -->
-  <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 glass-panel border border-slate-700 text-white px-6 py-4 rounded-2xl shadow-2xl transform translate-y-24 opacity-0 transition-all duration-400 z-50 flex items-center gap-3 min-w-[280px]">
-    <span id="toast-icon" class="text-2xl"></span>
+<section class="hero" id="home">
+  <div class="wrap hero-grid">
     <div>
-      <div id="toast-message" class="font-bold text-white"></div>
-      <div id="toast-sub" class="text-xs text-slate-400"></div>
+      <div class="eyebrow">Daily Discipline System</div>
+      <h1>RESET THE LOOP.<br>FOCUS THE DAY.<br><span class="accent">BUILD THE YOU.</span></h1>
+      <p class="hero-tagline">One system for the mind and the body — break the dopamine loop, run the schedule, hit the workout, and stack the days until discipline stops feeling like a fight.</p>
+      <div class="hero-ctas">
+        <a href="#schedule" class="btn btn-primary">See today's schedule ↓</a>
+        <a href="#workout" class="btn btn-ghost">View the workouts</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="num">55KG</div><div class="lbl">Target Weight</div></div>
+        <div class="hero-stat"><div class="num">5-6H</div><div class="lbl">Focused Study</div></div>
+        <div class="hero-stat"><div class="num">6 / 7</div><div class="lbl">Active Days</div></div>
+      </div>
+    </div>
+    <div class="loop-diagram">
+      <svg width="360" height="360" viewBox="0 0 400 400">
+        <g class="loop-ring">
+          <circle cx="200" cy="200" r="150" fill="none" stroke="rgba(182,255,59,0.25)" stroke-width="1.5" stroke-dasharray="4 8"/>
+        </g>
+        <circle cx="200" cy="200" r="108" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+        <path d="M 200 92 A 108 108 0 0 1 308 200" fill="none" stroke="#B6FF3B" stroke-width="2.5" marker-end="url(#arrow)"/>
+        <path d="M 308 200 A 108 108 0 0 1 200 308" fill="none" stroke="#F5B105" stroke-width="2.5" marker-end="url(#arrow)"/>
+        <path d="M 200 308 A 108 108 0 0 1 92 200" fill="none" stroke="#5B8CFF" stroke-width="2.5" marker-end="url(#arrow)"/>
+        <path d="M 92 200 A 108 108 0 0 1 200 92" fill="none" stroke="#B47CFF" stroke-width="2.5" marker-end="url(#arrow2)"/>
+        <defs>
+          <marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#F5B105"/></marker>
+          <marker id="arrow2" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#B47CFF"/></marker>
+        </defs>
+        <circle cx="200" cy="92" r="34" fill="#0F130B" stroke="#B6FF3B" stroke-width="1.5"/>
+        <text x="200" y="88" text-anchor="middle" class="loop-node-label">TRIGGER</text>
+        <text x="200" y="101" text-anchor="middle" class="loop-node-sub">bored · stressed</text>
+
+        <circle cx="308" cy="200" r="34" fill="#0F130B" stroke="#F5B105" stroke-width="1.5"/>
+        <text x="308" y="196" text-anchor="middle" class="loop-node-label">ROUTINE</text>
+        <text x="308" y="209" text-anchor="middle" class="loop-node-sub">old habit</text>
+
+        <circle cx="200" cy="308" r="34" fill="#0F130B" stroke="#5B8CFF" stroke-width="1.5"/>
+        <text x="200" y="304" text-anchor="middle" class="loop-node-label">REWARD</text>
+        <text x="200" y="317" text-anchor="middle" class="loop-node-sub">temporary</text>
+
+        <circle cx="92" cy="200" r="34" fill="#0F130B" stroke="#B47CFF" stroke-width="1.5"/>
+        <text x="92" y="196" text-anchor="middle" class="loop-node-label">CRAVING</text>
+        <text x="92" y="209" text-anchor="middle" class="loop-node-sub">urge peaks</text>
+
+        <text x="200" y="196" text-anchor="middle" class="loop-center-label">HABIT</text>
+        <text x="200" y="216" text-anchor="middle" class="loop-center-label">LOOP</text>
+      </svg>
     </div>
   </div>
+</section>
 
-  <script>
-  // ==================== STATE ====================
-  const state = {
-    xp: 0,
-    level: 1,
-    streak: 0,
-    completedToday: 0,
-    currentDateOffset: 0,
-    habits: [
-      { id: 1, name: "💧 Drink 8 glasses of water", completed: false, streak: 5, color: "from-cyan-500 to-blue-600", icon: "💧" },
-      { id: 2, name: "🏃 30 min exercise", completed: false, streak: 3, color: "from-emerald-500 to-teal-600", icon: "🏃" },
-      { id: 3, name: "📖 Read 20 pages", completed: false, streak: 12, color: "from-amber-500 to-orange-600", icon: "📖" },
-      { id: 4, name: "🧘 10 min meditation", completed: false, streak: 0, color: "from-purple-500 to-pink-600", icon: "🧘" },
-      { id: 5, name: "🥗 Eat a healthy meal", completed: false, streak: 7, color: "from-rose-500 to-red-600", icon: "🥗" },
-    ],
-    leaderboard: [
-      { name: "DragonSlayer", level: 12, xp: 2450, streak: 45, avatar: "🐉" },
-      { name: "MorningStar", level: 10, xp: 1890, streak: 32, avatar: "⭐" },
-      { name: "IronWill", level: 9, xp: 1650, streak: 28, avatar: "⚔️" },
-      { name: "ZenMaster", level: 8, xp: 1420, streak: 21, avatar: "🧘" },
-      { name: "NightOwl", level: 7, xp: 1180, streak: 18, avatar: "🦉" },
-    ]
-  };
+<section id="framework">
+  <div class="wrap">
+    <div class="eyebrow reveal">The Reset Blueprint</div>
+    <h2 class="section-title reveal">Break the loop first</h2>
+    <p class="section-sub reveal">Before the schedule and the workouts mean anything, the environment has to stop working against you. Three rules that make discipline the path of least resistance.</p>
 
-  const LEVELS = [
-    { level: 1, name: "Egg", emoji: "🥚", xpNeeded: 100 },
-    { level: 2, name: "Hatchling", emoji: "🐣", xpNeeded: 250 },
-    { level: 3, name: "Apprentice", emoji: "🦊", xpNeeded: 500 },
-    { level: 4, name: "Warrior", emoji: "🦁", xpNeeded: 900 },
-    { level: 5, name: "Knight", emoji: "🦄", xpNeeded: 1500 },
-    { level: 6, name: "Champion", emoji: "🐉", xpNeeded: 2500 },
-    { level: 7, name: "Legend", emoji: "👑", xpNeeded: 4000 },
-    { level: 8, name: "Mythic", emoji: "🌟", xpNeeded: 6000 },
-    { level: 9, name: "Titan", emoji: "⚡", xpNeeded: 9000 },
-    { level: 10, name: "Immortal", emoji: "🔱", xpNeeded: 13000 },
+    <div class="framework-grid">
+      <div class="card fw-card reveal">
+        <div class="fw-icon" style="background:rgba(182,255,59,0.12);">🚫</div>
+        <h3>The Golden Rule</h3>
+        <p>No phones in the bathroom or bed. Charge your phone across the room at night. If the physical barrier exists, <span class="highlight">80% of accidental slips vanish.</span></p>
+      </div>
+      <div class="card fw-card reveal">
+        <div class="fw-icon" style="background:rgba(245,177,5,0.12);">🌙</div>
+        <h3>Urge Surfing</h3>
+        <p>A strong urge peaks like a wave for <span class="highlight">10–15 minutes</span> then drops. Name it — "I'm bored right now" — then switch environments immediately: a walk, a window, or 20 bodyweight squats.</p>
+      </div>
+      <div class="card fw-card reveal">
+        <div class="fw-icon" style="background:rgba(91,140,255,0.12);">🛡️</div>
+        <h3>Digital Blocker</h3>
+        <p>Install a blocker app on every device tonight. Make the loop harder to enter than it is to walk away from.</p>
+      </div>
+    </div>
+
+    <div class="quote-strip reveal">"Discipline is choosing between what you want now and what you want most."</div>
+  </div>
+</section>
+
+<section id="schedule" style="background:var(--bg-soft);">
+  <div class="wrap">
+    <div class="eyebrow reveal">Daily Schedule</div>
+    <h2 class="section-title reveal">One day, fully mapped</h2>
+    <p class="section-sub reveal">Wake, move, study, eat, repeat — every block has a job. Deep-focus sessions in the morning, lighter revision at night, and a hard stop before sleep.</p>
+
+    <div class="timeline">
+      <div class="t-row reveal"><span class="t-dot" style="background:#2FD9C4;"></span>
+        <div class="t-time">06:00 – 07:30</div>
+        <div class="t-content"><h4>Wake up + Workout</h4><p>Water first, then Cycling or Bodyweight depending on the day.</p></div>
+      </div>
+      <div class="t-row reveal"><span class="t-dot" style="background:#F5B105;"></span>
+        <div class="t-time">08:30 – 09:15</div>
+        <div class="t-content"><h4>Breakfast</h4><p>High-protein meal to stay full and focused through session one.</p></div>
+      </div>
+      <div class="t-row reveal"><span class="t-dot" style="background:#5B8CFF;"></span>
+        <div class="t-time">09:15 – 11:00</div>
+        <div class="t-content"><h4>Study Session 1 <span class="t-tag" style="background:rgba(91,140,255,0.15); color:#5B8CFF;">Deep focus</span></h4><p>Learn a new topic — DSA, OS, OOP, or the current subject.</p></div>
+      </div>
+      <div class="t-row reveal"><span class="t-dot" style="background:#F5B105;"></span>
+        <div class="t-time">11:00 – 11:20</div>
+        <div class="t-content"><h4>Snack + Break</h4><p>Healthy snack, short reset before the next block.</p></div>
+      </div>
+      <div class="t-row reveal"><span class="t-dot" style="background:#B47CFF;"></span>
+        <div class="t-time">11:20 – 12:45</div>
+        <div class="t-content"><h4>Study Session 2</h4><p>Practice problems or coding — apply what session one covered.</p></div>
+      </div>
+      <div class="t-row reveal"><span class="t-dot" style="background:#FF9152;"></span>
+        <div class="t-time">01:00 – 02:00</div>
+        <div class="t-content"><h4>Lunch + Rest</h4><p>Balanced plate, then 20–30 minutes of real downtime.</p></div>
+      </div>
+      <div class="t-row reveal"><span class="t-dot" style="background:#5B8CFF;"></span>
+        <div class="t-time">02:00 – 03:30</div>
+        <div class="t-content"><h4>Study Session 3</h4><p>Notes revision or previous-year questions.</p></div>
+      </div>
+      <div class="t-row reveal"><span class="t-dot" style="background:#2FD9C4;"></span>
+        <div class="t-time">03:30 – 05:30</div>
+        <div class="t-content"><h4>Break / Activity</h4><p>Water, a walk, cycling or bodyweight work, or personal admin.</p></div>
+      </div>
+      <div class="t-row reveal"><span class="t-dot" style="background:#F5B105;"></span>
+        <div class="t-time">06:00 – 07:00</div>
+        <div class="t-content"><h4>Study Session 4</h4><p>Coding project — the habit tracker, side projects, GitHub commits.</p></div>
+      </div>
+      <div class="t-row reveal"><span class="t-dot" style="background:#FF9152;"></span>
+        <div class="t-time">07:30 – 08:00</div>
+        <div class="t-content"><h4>Dinner</h4><p>Light, healthy meal to close out the day's fuel.</p></div>
+      </div>
+      <div class="t-row reveal"><span class="t-dot" style="background:#5B8CFF;"></span>
+        <div class="t-time">08:15 – 09:00</div>
+        <div class="t-content"><h4>Study Session 5 <span class="t-tag" style="background:rgba(91,140,255,0.15); color:#5B8CFF;">Light revision</span></h4><p>Flashcards, formulas — revisit what today taught you.</p></div>
+      </div>
+      <div class="t-row reveal"><span class="t-dot" style="background:#B47CFF;"></span>
+        <div class="t-time">09:00 – 10:00</div>
+        <div class="t-content"><h4>Digital Detox</h4><p>No phone. Plan tomorrow, read for 20–30 minutes.</p></div>
+      </div>
+      <div class="t-row reveal"><span class="t-dot" style="background:#2FD9C4;"></span>
+        <div class="t-time">10:00 PM</div>
+        <div class="t-content"><h4>Sleep</h4><p>Aim for 7–8 hours, every night, no negotiation.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="week">
+  <div class="wrap">
+    <div class="eyebrow reveal">Weekly Plan</div>
+    <h2 class="section-title reveal">The week at a glance</h2>
+    <p class="section-sub reveal">Each day carries one theme so nothing gets crammed and nothing gets skipped.</p>
+
+    <div class="week-grid">
+      <div class="day-card reveal" style="--day-color:#5B8CFF;"><div class="day-name">MON</div><h4>DSA + Coding Practice</h4></div>
+      <div class="day-card reveal" style="--day-color:#2FD9C4;"><div class="day-name">TUE</div><h4>Operating Systems + Projects</h4></div>
+      <div class="day-card reveal" style="--day-color:#B47CFF;"><div class="day-name">WED</div><h4>OOP + Programming</h4></div>
+      <div class="day-card reveal" style="--day-color:#F5B105;"><div class="day-name">THU</div><h4>Digital Finance + Revision</h4></div>
+      <div class="day-card reveal" style="--day-color:#86D416;"><div class="day-name">FRI</div><h4>DBMS / Current Subject + Coding</h4></div>
+      <div class="day-card reveal" style="--day-color:#FF9152;"><div class="day-name">SAT</div><h4>Build Projects + GitHub + Portfolio</h4></div>
+      <div class="day-card reveal" style="--day-color:#5B8CFF;"><div class="day-name">SUN</div><h4>Weekly Revision + Mock Test — Analyze Mistakes, Plan Next Week</h4></div>
+    </div>
+  </div>
+</section>
+
+<section id="workout" style="background:var(--bg-soft);">
+  <div class="wrap">
+    <div class="eyebrow reveal">The Workout Strategy</div>
+    <h2 class="section-title reveal">Move your body. Clear your mind.</h2>
+    <p class="section-sub reveal">Two days, alternating — one for distance and headspace, one for strength and circuits.</p>
+
+    <div class="vs-panel reveal">
+      <div class="vs-side a">
+        <div class="day-tag">Day A · The Escape Route</div>
+        <h3>Cycling Days</h3>
+        <span class="days-pill">TUE · THU · SAT</span>
+        <div class="vs-meta">
+          <div><div class="m-lbl">Duration</div><div class="m-val">45 minutes</div></div>
+          <div><div class="m-lbl">Focus</div><div class="m-val">Podcasts / Music</div></div>
+          <div><div class="m-lbl">Goal</div><div class="m-val">Clear your head</div></div>
+        </div>
+        <div class="round-note" style="color:var(--lime);">Steady pace. Deep breaths. Better you.</div>
+      </div>
+      <span class="vs-badge">VS</span>
+      <div class="vs-side b">
+        <div class="day-tag">Day B · The Dopamine Circuit</div>
+        <h3>Bodyweight Days</h3>
+        <span class="days-pill">MON · WED · FRI</span>
+        <div class="exercise-row"><span class="exercise-num">1</span><span class="ex-name">Bodyweight Squats</span><span class="ex-reps">15 reps</span></div>
+        <div class="exercise-row"><span class="exercise-num">2</span><span class="ex-name">Push-ups (incline/standard)</span><span class="ex-reps">10–12 reps</span></div>
+        <div class="exercise-row"><span class="exercise-num">3</span><span class="ex-name">Walking Lunges</span><span class="ex-reps">12 / leg</span></div>
+        <div class="exercise-row"><span class="exercise-num">4</span><span class="ex-name">Plank Hold</span><span class="ex-reps">30–45 sec</span></div>
+        <div class="exercise-row"><span class="exercise-num">5</span><span class="ex-name">Glute Bridges</span><span class="ex-reps">15 reps</span></div>
+        <div class="round-note">Back-to-back, 60 sec rest per round. Do 3–4 rounds.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="fuel">
+  <div class="wrap">
+    <div class="eyebrow reveal">Fuel &amp; Targets</div>
+    <h2 class="section-title reveal">What goes in, tracked</h2>
+    <p class="section-sub reveal">Nutrition principles, the weight goal, and the water target that keep the rest of the system running.</p>
+
+    <div class="fuel-grid">
+      <div class="card reveal">
+        <h3>Nutrition Principles</h3>
+        <div class="principle-row"><span class="dot"></span><div><strong>High Protein</strong>Keeps you full and builds muscle</div></div>
+        <div class="principle-row"><span class="dot"></span><div><strong>Whole Foods</strong>Eat natural, unprocessed</div></div>
+        <div class="principle-row"><span class="dot"></span><div><strong>Balanced Plate</strong>Carbs + protein + healthy fats</div></div>
+        <div class="principle-row"><span class="dot"></span><div><strong>Hydrate</strong>3–4 liters of water daily</div></div>
+        <div class="principle-row limit"><span class="dot"></span><div><strong>Limit Sugar &amp; Junk</strong>They kill your energy</div></div>
+      </div>
+
+      <div class="card gauge-wrap reveal">
+        <h3>Fat Loss Goal</h3>
+        <svg width="180" height="110" viewBox="0 0 200 120">
+          <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="12" stroke-linecap="round"/>
+          <path d="M 20 100 A 80 80 0 0 1 158 42" fill="none" stroke="#F5B105" stroke-width="12" stroke-linecap="round"/>
+        </svg>
+        <div class="gauge-nums">62 → 55 KG</div>
+        <div class="gauge-sub">6 – 8 WEEKS · WITH CONSISTENCY</div>
+        <div class="gauge-note">Don't starve yourself. Just stay consistent, hit your sessions, and trust the process.</div>
+      </div>
+
+      <div class="card reveal">
+        <h3>Daily Water Target</h3>
+        <div class="water-big">3–4L</div>
+        <div class="water-check"><span class="tick">✓</span> Boosts energy</div>
+        <div class="water-check"><span class="tick">✓</span> Aids fat loss</div>
+        <div class="water-check"><span class="tick">✓</span> Improves focus</div>
+        <div class="water-check"><span class="tick">✓</span> Clears skin</div>
+        <div class="water-check"><span class="tick">✓</span> Supports recovery</div>
+      </div>
+
+      <div class="card targets-card reveal">
+        <h3>Today's Targets</h3>
+        <div class="targets-list" id="targetsList"></div>
+        <div class="targets-progress" id="targetsProgress"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="mindset" style="background:var(--bg-soft);">
+  <div class="wrap">
+    <div class="eyebrow reveal">Mindset</div>
+    <h2 class="section-title reveal">Reminders &amp; the shift</h2>
+    <p class="section-sub reveal">The system works when the mindset behind it holds. Read this before the day gets loud.</p>
+
+    <div class="mindset-grid">
+      <div class="card reveal">
+        <h3 style="font-family:'Inter',sans-serif; font-size:14px; text-transform:uppercase; margin-bottom:14px;">Daily Reminders</h3>
+        <div class="reminder-row"><span class="r-icon">☀️</span> Wake up early</div>
+        <div class="reminder-row"><span class="r-icon">🏃</span> Move your body</div>
+        <div class="reminder-row"><span class="r-icon">🥗</span> Eat clean</div>
+        <div class="reminder-row"><span class="r-icon">💧</span> Drink water</div>
+        <div class="reminder-row avoid"><span class="r-icon">🚫</span> Stay away from junk content</div>
+        <div class="reminder-row"><span class="r-icon">📖</span> Read, learn, grow</div>
+        <div class="reminder-row"><span class="r-icon">😴</span> Sleep 7–8 hours</div>
+      </div>
+      <div class="card reveal">
+        <h3 style="font-family:'Inter',sans-serif; font-size:14px; text-transform:uppercase; margin-bottom:14px;">Mindset Shift</h3>
+        <div class="reminder-row"><span class="r-icon">🔁</span> I choose discipline over pleasure</div>
+        <div class="reminder-row"><span class="r-icon">🌱</span> I build my future every single day</div>
+        <div class="reminder-row"><span class="r-icon">💪</span> I am stronger than my urges</div>
+        <div class="reminder-row" style="border-bottom:none; margin-top:6px; color:var(--lime); font-weight:700;"><span class="r-icon">⚡</span> One day or day one. You decide.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="big-quote">When an urge hits, remember your goal and the person <span class="accent">you want to become.</span></div>
+    <div class="foot-tag">Discipline today · Freedom tomorrow</div>
+  </div>
+</footer>
+
+<script>
+  // nav mobile toggle
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+  // scroll-spy
+  const sections = document.querySelectorAll('section[id]');
+  const links = document.querySelectorAll('.nav-links a');
+  const spy = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const link = document.querySelector('.nav-links a[href="#' + entry.target.id + '"]');
+      if (!link) return;
+      if (entry.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  sections.forEach(s => spy.observe(s));
+
+  // reveal on scroll
+  const revealEls = document.querySelectorAll('.reveal');
+  const revealer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        revealer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => revealer.observe(el));
+
+  // daily targets checklist with persistence
+  const TARGETS = [
+    '5 – 6 hours of focused study',
+    '1 – 2 hours of coding / projects',
+    'Revise everything the same day',
+    'Solve 5 – 10 problems / PYQs',
+    'Read 20 – 30 minutes before bed',
+    'Stay consistent. Track your progress.'
   ];
+  const STORAGE_KEY = 'protocol-daily-targets';
+  let checkedState = {};
 
-  // ==================== RENDER ====================
-  function render() {
-    renderHero();
-    renderHabits();
-    renderLeaderboard();
-  }
-
-  function renderHero() {
-    const currentLevel = LEVELS[Math.min(state.level - 1, LEVELS.length - 1)];
-    const nextLevel = LEVELS[Math.min(state.level, LEVELS.length - 1)];
-    const prevLevelXp = state.level > 1 ? LEVELS[state.level - 2].xpNeeded : 0;
-    const xpInLevel = state.xp - prevLevelXp;
-    const xpNeeded = nextLevel ? nextLevel.xpNeeded - prevLevelXp : 1;
-    const progress = Math.min((xpInLevel / xpNeeded) * 100, 100);
-
-    document.getElementById('hero-avatar').textContent = currentLevel.emoji;
-    document.getElementById('level-badge').textContent = `LVL ${state.level}`;
-    document.getElementById('total-xp').textContent = `${state.xp} XP`;
-    document.getElementById('xp-bar').style.width = `${progress}%`;
-    document.getElementById('xp-text').textContent = `${xpInLevel} / ${xpNeeded} XP to Level ${state.level + 1}`;
-    document.getElementById('stat-streak').textContent = state.streak;
-    document.getElementById('stat-completed').textContent = state.completedToday;
-    document.getElementById('stat-rank').textContent = `#${getRank()}`;
-  }
-
-  function renderHabits() {
-    const container = document.getElementById('habits-container');
-    const date = new Date();
-    date.setDate(date.getDate() + state.currentDateOffset);
-    const isToday = state.currentDateOffset === 0;
-    
-    const options = { weekday: 'long', month: 'short', day: 'numeric' };
-    document.getElementById('current-date').textContent = isToday ? 'Today' : date.toLocaleDateString('en-US', options);
-    document.getElementById('date-subtitle').textContent = isToday ? 'Complete your daily quests' : 'Viewing past quests';
-
-    container.innerHTML = state.habits.map((habit, index) => {
-      const isDone = isToday ? habit.completed : Math.random() > 0.5;
-      const delay = index * 0.1;
-      
-      return `
-        <div class="habit-card glass-panel rounded-2xl p-5 border border-slate-700/50 relative overflow-hidden animate-slide-up" style="animation-delay: ${delay}s; animation-fill-mode: both;">
-          ${isDone ? '<div class="absolute top-3 right-3 text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-lg border border-emerald-500/20">+25 XP</div>' : ''}
-          
-          <div class="flex items-center gap-4">
-            <button 
-              onclick="toggleHabit(${habit.id})" 
-              class="btn-complete relative w-14 h-14 rounded-2xl bg-gradient-to-br ${habit.color} flex items-center justify-center text-white text-2xl shadow-xl ${isDone ? 'opacity-60 grayscale' : ''} ${!isToday ? 'cursor-not-allowed' : ''}"
-              ${!isToday ? 'disabled' : ''}
-            >
-              ${isDone ? '✓' : habit.icon}
-              ${isDone ? '<div class="absolute inset-0 rounded-2xl bg-white/30 animate-ping"></div>' : ''}
-            </button>
-            
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center justify-between mb-2">
-                <span class="font-bold text-lg ${isDone ? 'line-through text-slate-500' : 'text-white'} truncate">${habit.name}</span>
-                <div class="flex items-center gap-1.5 ${habit.streak > 0 ? 'text-amber-400' : 'text-slate-600'}">
-                  <span class="text-sm">🔥</span>
-                  <span class="font-mono font-bold">${habit.streak}</span>
-                </div>
-              </div>
-              
-              <!-- Liquid Progress Bar -->
-              <div class="relative w-full bg-slate-800/80 rounded-full h-3 overflow-hidden border border-slate-700/50">
-                <div class="h-full rounded-full liquid-bar transition-all duration-1000 ease-out relative" 
-                  style="width: ${isDone ? '100%' : '0%'}; background: linear-gradient(90deg, ${getColorHex(habit.color)}, ${getColorHex(habit.color, true)}); background-size: 200% 100%;">
-                  ${isDone ? '<div class="absolute inset-0 bg-white/20 rounded-full"></div>' : ''}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-    }).join('');
-  }
-
-  function getColorHex(colorClass, light = false) {
-    const colors = {
-      'from-cyan-500 to-blue-600': light ? '#60a5fa' : '#06b6d4',
-      'from-emerald-500 to-teal-600': light ? '#2dd4bf' : '#10b981',
-      'from-amber-500 to-orange-600': light ? '#fb923c' : '#f59e0b',
-      'from-purple-500 to-pink-600': light ? '#f472b6' : '#a855f7',
-      'from-rose-500 to-red-600': light ? '#f87171' : '#f43f5e',
-      'from-indigo-500 to-violet-600': light ? '#a78bfa' : '#6366f1',
-    };
-    return colors[colorClass] || '#a855f7';
-  }
-
-  function renderLeaderboard() {
-    const container = document.getElementById('leaderboard');
-    const you = { name: "You", level: state.level, xp: state.xp, streak: state.streak, avatar: LEVELS[Math.min(state.level - 1, LEVELS.length - 1)].emoji, isYou: true };
-    const allPlayers = [...state.leaderboard, you].sort((a, b) => b.xp - a.xp);
-
-    container.innerHTML = allPlayers.map((player, i) => {
-      const rankColors = ['text-amber-400', 'text-slate-300', 'text-amber-600'];
-      const rankBg = i === 0 ? 'bg-gradient-to-r from-amber-500/10 to-transparent border-amber-500/30' : 
-                     i === 1 ? 'bg-gradient-to-r from-slate-400/10 to-transparent border-slate-500/30' :
-                     i === 2 ? 'bg-gradient-to-r from-amber-700/10 to-transparent border-amber-700/30' :
-                     'bg-slate-800/40 border-slate-700/30';
-      
-      return `
-        <div class="flex items-center gap-4 p-4 rounded-xl border ${rankBg} ${player.isYou ? 'ring-2 ring-purple-500/40 ring-offset-2 ring-offset-slate-950' : ''} transition-all duration-300 hover:scale-[1.02] hover:bg-slate-800/60 cursor-default">
-          <div class="w-10 text-center font-black text-lg ${i < 3 ? rankColors[i] : 'text-slate-600'}">${i + 1}</div>
-          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center text-2xl shadow-inner border border-slate-600/50">${player.avatar}</div>
-          <div class="flex-1 min-w-0">
-            <div class="font-bold text-base ${player.isYou ? 'text-purple-400' : 'text-white'} truncate">${player.name} ${player.isYou ? '<span class="text-xs bg-purple-500/20 text-purple-400 px-2 py-0.5 rounded-full ml-2">YOU</span>' : ''}</div>
-            <div class="text-xs text-slate-500 mt-0.5">Level ${player.level} • ${player.xp.toLocaleString()} XP</div>
-          </div>
-          <div class="text-right">
-            <div class="text-amber-400 font-bold text-lg">🔥 ${player.streak}</div>
-          </div>
-        </div>
-      `;
-    }).join('');
-  }
-
-  // ==================== ACTIONS ====================
-  function toggleHabit(id) {
-    const habit = state.habits.find(h => h.id === id);
-    if (!habit || habit.completed) return;
-
-    habit.completed = true;
-    habit.streak++;
-    state.completedToday++;
-    state.xp += 25;
-    state.streak = Math.max(state.streak, habit.streak);
-
-    // Check level up
-    const nextLevelInfo = LEVELS[Math.min(state.level, LEVELS.length - 1)];
-    if (nextLevelInfo && state.xp >= nextLevelInfo.xpNeeded) {
-      state.level++;
-      setTimeout(() => showLevelUp(), 600);
+  async function loadTargets() {
+    try {
+      const result = await window.storage.get(STORAGE_KEY, false);
+      if (result && result.value) checkedState = JSON.parse(result.value);
+    } catch (e) {
+      // nothing saved yet
     }
-
-    fireConfetti(80);
-    showToast('🎉', 'Quest Complete!', '+25 XP earned');
-    render();
+    renderTargets();
   }
 
-  function showLevelUp() {
-    const modal = document.getElementById('levelup-modal');
-    const content = document.getElementById('levelup-content');
-    const newAvatar = document.getElementById('new-avatar');
-    const levelName = document.getElementById('new-level-name');
-    const levelInfo = LEVELS[Math.min(state.level - 1, LEVELS.length - 1)];
-    
-    newAvatar.textContent = levelInfo.emoji;
-    levelName.textContent = `${levelInfo.name} — Level ${state.level}`;
-    
-    modal.classList.remove('opacity-0', 'pointer-events-none');
-    content.classList.remove('scale-75');
-    content.classList.add('scale-100');
-    
-    fireConfetti(150);
-  }
-
-  function closeLevelUp() {
-    const modal = document.getElementById('levelup-modal');
-    const content = document.getElementById('levelup-content');
-    modal.classList.add('opacity-0', 'pointer-events-none');
-    content.classList.remove('scale-100');
-    content.classList.add('scale-75');
-  }
-
-  function changeDate(dir) {
-    state.currentDateOffset += dir;
-    render();
-  }
-
-  function showAddHabit() {
-    const modal = document.getElementById('add-habit-modal');
-    const content = document.getElementById('add-habit-content');
-    modal.classList.remove('opacity-0', 'pointer-events-none');
-    content.classList.remove('scale-90');
-    content.classList.add('scale-100');
-    setTimeout(() => document.getElementById('new-habit-name').focus(), 100);
-  }
-
-  function closeAddHabit() {
-    const modal = document.getElementById('add-habit-modal');
-    const content = document.getElementById('add-habit-content');
-    modal.classList.add('opacity-0', 'pointer-events-none');
-    content.classList.remove('scale-100');
-    content.classList.add('scale-90');
-    document.getElementById('new-habit-name').value = '';
-  }
-
-  function addHabit() {
-    const input = document.getElementById('new-habit-name');
-    const name = input.value.trim();
-    if (!name) {
-      input.classList.add('animate-shake');
-      setTimeout(() => input.classList.remove('animate-shake'), 300);
-      return;
+  async function saveTargets() {
+    try {
+      await window.storage.set(STORAGE_KEY, JSON.stringify(checkedState), false);
+    } catch (e) {
+      // best effort — ignore
     }
+  }
 
-    const colors = [
-      "from-cyan-500 to-blue-600",
-      "from-emerald-500 to-teal-600", 
-      "from-amber-500 to-orange-600",
-      "from-purple-500 to-pink-600",
-      "from-rose-500 to-red-600",
-      "from-indigo-500 to-violet-600",
-      "from-lime-500 to-green-600",
-      "from-sky-500 to-indigo-600"
-    ];
-    const icons = ["🎯", "💪", "🌟", "🔥", "⚡", "🚀", "💎", "🌈"];
-
-    state.habits.push({
-      id: Date.now(),
-      name: name.startsWith(' ') ? name : `${icons[Math.floor(Math.random() * icons.length)]} ${name}`,
-      completed: false,
-      streak: 0,
-      color: colors[Math.floor(Math.random() * colors.length)],
-      icon: icons[Math.floor(Math.random() * icons.length)]
+  function renderTargets() {
+    const list = document.getElementById('targetsList');
+    list.innerHTML = '';
+    TARGETS.forEach((t, i) => {
+      const done = !!checkedState[i];
+      const item = document.createElement('label');
+      item.className = 'target-item' + (done ? ' done' : '');
+      item.innerHTML = `<input type="checkbox" ${done ? 'checked' : ''} data-idx="${i}"><span>${t}</span>`;
+      item.querySelector('input').addEventListener('change', (e) => {
+        checkedState[i] = e.target.checked;
+        item.classList.toggle('done', e.target.checked);
+        updateProgress();
+        saveTargets();
+      });
+      list.appendChild(item);
     });
-
-    closeAddHabit();
-    showToast('✨', 'New Quest Added!', 'Ready to conquer?');
-    render();
+    updateProgress();
   }
 
-  function getRank() {
-    const all = [...state.leaderboard, { xp: state.xp }].sort((a, b) => b.xp - a.xp);
-    return all.findIndex(p => p.xp === state.xp) + 1;
+  function updateProgress() {
+    const done = TARGETS.filter((_, i) => checkedState[i]).length;
+    document.getElementById('targetsProgress').textContent = `${done} / ${TARGETS.length} targets hit today`;
   }
 
-  function showToast(icon, message, sub) {
-    const toast = document.getElementById('toast');
-    document.getElementById('toast-icon').textContent = icon;
-    document.getElementById('toast-message').textContent = message;
-    document.getElementById('toast-sub').textContent = sub || '';
-    toast.classList.remove('translate-y-24', 'opacity-0');
-    
-    setTimeout(() => {
-      toast.classList.add('translate-y-24', 'opacity-0');
-    }, 2800);
-  }
+  loadTargets();
+</script>
 
-  // ==================== CONFETTI ENGINE ====================
-  const canvas = document.getElementById('confetti-canvas');
-  const ctx = canvas.getContext('2d');
-  let particles = [];
-  let animationId = null;
-
-  function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-  resizeCanvas();
-  window.addEventListener('resize', resizeCanvas);
-
-  class Particle {
-    constructor(x, y, burst = 1) {
-      const angle = Math.random() * Math.PI * 2;
-      const speed = Math.random() * 15 + 5;
-      this.x = x || canvas.width / 2;
-      this.y = y || canvas.height / 2;
-      this.vx = Math.cos(angle) * speed * burst;
-      this.vy = Math.sin(angle) * speed * burst - 8;
-      this.gravity = 0.4;
-      this.friction = 0.96;
-      this.size = Math.random() * 10 + 5;
-      this.colors = ['#f472b6', '#22d3ee', '#a78bfa', '#fbbf24', '#34d399', '#fb7185', '#60a5fa', '#c084fc'];
-      this.color = this.colors[Math.floor(Math.random() * this.colors.length)];
-      this.rotation = Math.random() * 360;
-      this.rotationSpeed = (Math.random() - 0.5) * 15;
-      this.life = 1;
-      this.decay = Math.random() * 0.015 + 0.008;
-      this.shape = Math.random() > 0.6 ? 'rect' : (Math.random() > 0.5 ? 'circle' : 'star');
-      this.sparkle = Math.random() > 0.7;
-    }
-
-    update() {
-      this.vx *= this.friction;
-      this.vy *= this.friction;
-      this.vy += this.gravity;
-      this.x += this.vx;
-      this.y += this.vy;
-      this.rotation += this.rotationSpeed;
-      this.life -= this.decay;
-      
-      if (this.sparkle) {
-        this.size *= 0.99;
-      }
-    }
-
-    draw() {
-      ctx.save();
-      ctx.translate(this.x, this.y);
-      ctx.rotate((this.rotation * Math.PI) / 180);
-      ctx.globalAlpha = this.life;
-      ctx.fillStyle = this.color;
-      
-      if (this.shape === 'rect') {
-        ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
-      } else if (this.shape === 'circle') {
-        ctx.beginPath();
-        ctx.arc(0, 0, this.size / 2, 0, Math.PI * 2);
-        ctx.fill();
-      } else {
-        // Star shape
-        ctx.beginPath();
-        for (let i = 0; i < 5; i++) {
-          ctx.lineTo(Math.cos((18 + i * 72) * Math.PI / 180) * this.size / 2,
-                     -Math.sin((18 + i * 72) * Math.PI / 180) * this.size / 2);
-          ctx.lineTo(Math.cos((54 + i * 72) * Math.PI / 180) * this.size / 4,
-                     -Math.sin((54 + i * 72) * Math.PI / 180) * this.size / 4);
-        }
-        ctx.closePath();
-        ctx.fill();
-      }
-      
-      if (this.sparkle) {
-        ctx.shadowColor = this.color;
-        ctx.shadowBlur = 10;
-      }
-      
-      ctx.restore();
-    }
-  }
-
-  function fireConfetti(amount = 60) {
-    const rect = document.getElementById('habits-container').getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + 100;
-    
-    for (let i = 0; i < amount; i++) {
-      particles.push(new Particle(centerX, centerY, amount / 50));
-    }
-    
-    if (!animationId) {
-      animateConfetti();
-    }
-  }
-
-  function animateConfetti() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles = particles.filter(p => p.life > 0);
-    
-    particles.forEach(p => {
-      p.update();
-      p.draw();
-    });
-    
-    if (particles.length > 0) {
-      animationId = requestAnimationFrame(animateConfetti);
-    } else {
-      animationId = null;
-    }
-  }
-
-  // ==================== KEYBOARD SHORTCUTS ====================
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      closeAddHabit();
-      closeLevelUp();
-    }
-  });
-
-  // ==================== INIT ====================
-  render();
-  </script>
 </body>
 </html>
